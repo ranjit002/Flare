@@ -11,7 +11,7 @@ void addForces(fluid::IFluid& fluid, const Eigen::Vector3f& f, float dt)
   int H = fluid.height();
   int D = fluid.depth();
 
-  const Eigen::Vector3f deltav = f * dt;
+  const Eigen::Vector3f deltav = (-1.0 * f) * dt;
 
   for (int x = 0; x < W; ++x)
     for (int y = 0; y < H; ++y)
