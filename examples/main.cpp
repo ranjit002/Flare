@@ -10,11 +10,12 @@ int main()
   const int W = 32, H = 32, D = 2;
   const float dt = 0.1f;
 
-  fluid::Fluid fluid(W, H, D);
+  fluid::Fluid fluid{W, H, D};
   fluid.setDensity(W / 2, H / 2, D / 2, 100.0f);
-  solver::BasicSolver solver;
+  solver::BasicSolver solver{};
 
-  sf::RenderWindow window(sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}), "Fluid Simulation");
+  sf::RenderWindow window(
+      sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}), "Fluid Simulation");
   window.setFramerateLimit(FRAME_RATE);
 
   while (window.isOpen())
