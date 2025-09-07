@@ -1,0 +1,7 @@
+.vscode
+main.dSYM
+
+.DS_Store
+.clang-format
+build/
+.cache/
