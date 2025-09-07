@@ -5,7 +5,8 @@
 
 int main()
 {
-  int FRAME_RATE = 1;
+  const int SCALE_FACTOR = 10;
+  const int FRAME_RATE = 30;
   const int W = 32, H = 32, D = 2;
   const float dt = 0.1f;
 
@@ -13,7 +14,7 @@ int main()
   fluid.setDensity(W / 2, H / 2, D / 2, 100.0f);
   solver::BasicSolver solver;
 
-  sf::RenderWindow window(sf::VideoMode({W, H}), "Fluid Simulation");
+  sf::RenderWindow window(sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}), "Fluid Simulation");
   window.setFramerateLimit(FRAME_RATE);
 
   while (window.isOpen())
@@ -25,7 +26,7 @@ int main()
     solver.step(fluid, dt);
 
     float maxDensity = 100.f;
-    sf::RectangleShape pixel(sf::Vector2f(1.f, 1.f));
+    sf::RectangleShape pixel(sf::Vector2f(SCALE_FACTOR, SCALE_FACTOR));
 
     for (int y = 0; y < H; ++y)
       for (int x = 0; x < W; ++x)
