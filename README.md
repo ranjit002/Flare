@@ -1,18 +1,18 @@
 # Flare
 
-<div style="display: flex; align-items: center; gap: 20px;">
-
+<table>
+<tr>
+<td width="160" valign="middle">
   <img src="./assets/flare.png" alt="Flare Logo" width="150"/>
-
-  <div>
-    <p style="font-size: 1.1em;">
-      <b>Flare</b> is a <b>high-performance 3D fluid simulation library</b> built in C++.  
-      It focuses on <b>speed, efficiency, and practical simulation features</b> while remaining modular enough for experimentation and extension.
-    </p>
-  </div>
-
-</div>
-
+</td>
+<td valign="middle">
+  <p>
+    <b>Flare</b> is a <b>high-performance 3D fluid simulation library</b> built in C++.  
+    It focuses on <b>speed, efficiency, and practical simulation features</b> while remaining modular enough for experimentation and extension.
+  </p>
+</td>
+</tr>
+</table>
 ---
 
 ## Features
