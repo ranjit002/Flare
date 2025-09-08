@@ -13,16 +13,13 @@ class BoxBoundary : public IBoundary
 
   bool isSolid(int x, int y, int z) const override
   {
-    return x == 0 || y == 0 || z == 0 || x == W_ || y == H_ || z == D_;
+    return x == 0 || x == W_ - 1 || y == 0 || y == H_ - 1 || z == 0 ||
+           z == D_ - 1;
   }
 
   Eigen::Vector3f wallVelocity(int x, int y, int z) const override
   {
-    (void)x;
-    (void)y;
-    (void)z;
-    // Return constant inflow velocity
-    return {0, 0, 0};
+    return Eigen::Vector3f::Zero();
   }
 
  private:

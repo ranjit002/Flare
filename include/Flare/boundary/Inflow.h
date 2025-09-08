@@ -9,30 +9,29 @@ namespace boundary
 class InflowBoundary : public IBoundary
 {
  public:
-  InflowBoundary(const Eigen::Vector3f& inflowVel) : inflowVelocity(inflowVel)
+  explicit InflowBoundary(Eigen::Vector3f vel, float edge_density)
+      : vel_(vel), edge_density_(edge_density)
   {
   }
 
   bool isSolid(int x, int y, int z) const override
   {
-    (void)x;
-    (void)y;
-    (void)z;
-    // Left edge acts as a boundary
-    return (x == 0);
+    return x == 0;  // left edge
   }
 
   Eigen::Vector3f wallVelocity(int x, int y, int z) const override
   {
-    (void)x;
-    (void)y;
-    (void)z;
-    // Return constant inflow velocity
-    return inflowVelocity;
+    return vel_;
+  }
+
+  float wallDensity(int x, int y, int z) const override
+  {
+    return edge_density_;
   }
 
  private:
-  Eigen::Vector3f inflowVelocity;
+  Eigen::Vector3f vel_;
+  float edge_density_;
 };
 
 }  // namespace boundary

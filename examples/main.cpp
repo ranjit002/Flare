@@ -17,30 +17,31 @@ void addDensityInflow(fluid::Fluid& fluid, int H, int D)
 int main()
 {
   const int SCALE_FACTOR = 10;
-  const int FRAME_RATE = 5;
+  const int FRAME_RATE = 10;
   const int W = 32, H = 32, D = 32;
   const float dt = 0.1f;
 
   fluid::Fluid fluid{W, H, D};
-  solver::BasicSolver solver{0.0f, 10.f, 10, 10};
+  solver::BasicSolver solver{0.1f, 100.f, 10, 10};
 
   std::vector<std::unique_ptr<boundary::IBoundary>> bcs;
 
-  Eigen::Vector3f inflowVel(100.0f, 100.0f, 100.0f);
-  bcs.push_back(std::make_unique<boundary::InflowBoundary>(inflowVel));
 
+  // Left stream
+  Eigen::Vector3f inflowVel(100.0f, 100.0f, 100.0f);
+  bcs.push_back(std::make_unique<boundary::InflowBoundary>(inflowVel, 100));
+
+  // Box
   bcs.push_back(std::make_unique<boundary::BoxBoundary>(W, H, D));
 
+  // Circle obstacle
   Eigen::Vector3f centre = Eigen::Vector3f{static_cast<float>(W) / 2,
       static_cast<float>(H) / 2,
       static_cast<float>(D) / 2};
 
-  bcs.push_back(std::make_unique<boundary::CircleBoundary>(centre, 5));
+  bcs.push_back(std::make_unique<boundary::CircleBoundary>(centre, 1));
 
-  for (auto& bc : bcs)
-  {
-    solver.addBC(std::move(bc));
-  }
+  for (auto& bc : bcs) solver.addBC(std::move(bc));
 
   sf::RenderWindow window(
       sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}), "Fluid Simulation");

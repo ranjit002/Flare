@@ -10,22 +10,20 @@ class CircleBoundary : public IBoundary
 {
  public:
   CircleBoundary(Eigen::Vector3f centre, float radius)
-      : centre_{centre}, radius_{radius}
+      : centre_(centre), radius_(radius)
   {
   }
 
   bool isSolid(int x, int y, int z) const override
   {
-    float dist = (centre_ - Eigen::Vector3f{static_cast<float>(x),
-                                static_cast<float>(y),
-                                static_cast<float>(z)})
-                     .norm();
-    return (dist < radius_);
+    float dist =
+        (centre_ - Eigen::Vector3f(float(x), float(y), float(z))).norm();
+    return dist <= radius_;
   }
 
   Eigen::Vector3f wallVelocity(int x, int y, int z) const override
   {
-    return {0, 0, 0};
+    return Eigen::Vector3f::Zero();
   }
 
  private:

@@ -22,7 +22,13 @@ void diffuse(fluid::Fluid& fluid,
 void project(fluid::Fluid& fluid,
     int iter,
     const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs);
-void advectDensity(fluid::Fluid& fluid, float dt);
-void diffuseDensity(fluid::Fluid& fluid, float dt, float diff, int iter);
+void advectDensity(fluid::Fluid& fluid,
+    float dt,
+    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs);
+void diffuseDensity(fluid::Fluid& fluid,
+    float dt,
+    float diff,
+    int iter,
+    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs);
 
 }  // namespace solver::ops
