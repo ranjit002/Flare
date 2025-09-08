@@ -96,36 +96,39 @@ inline Eigen::Vector3f sampleVelocity(
 inline float sampleDensity(
     const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs,
     const Eigen::Vector3f& pos,
-    int W, int H, int D,
+    int W,
+    int H,
+    int D,
     const auto& oldDensity,
     const auto& idx)
 {
-    int x0 = std::clamp(int(pos[0]), 0, W - 1);
-    int x1 = std::clamp(x0 + 1, 0, W - 1);
-    int y0 = std::clamp(int(pos[1]), 0, H - 1);
-    int y1 = std::clamp(y0 + 1, 0, H - 1);
-    int z0 = std::clamp(int(pos[2]), 0, D - 1);
-    int z1 = std::clamp(z0 + 1, 0, D - 1);
+  int x0 = std::clamp(int(pos[0]), 0, W - 1);
+  int x1 = std::clamp(x0 + 1, 0, W - 1);
+  int y0 = std::clamp(int(pos[1]), 0, H - 1);
+  int y1 = std::clamp(y0 + 1, 0, H - 1);
+  int z0 = std::clamp(int(pos[2]), 0, D - 1);
+  int z1 = std::clamp(z0 + 1, 0, D - 1);
 
-    auto getVal = [&](int xi, int yi, int zi){
-        return isSolidCell(bcs, xi, yi, zi) ? getWallDensity(bcs, xi, yi, zi) : oldDensity[idx(xi, yi, zi)];
-    };
+  auto getVal = [&](int xi, int yi, int zi)
+  {
+    return isSolidCell(bcs, xi, yi, zi) ? getWallDensity(bcs, xi, yi, zi)
+                                        : oldDensity[idx(xi, yi, zi)];
+  };
 
-    float xd = pos[0] - x0;
-    float yd = pos[1] - y0;
-    float zd = pos[2] - z0;
+  float xd = pos[0] - x0;
+  float yd = pos[1] - y0;
+  float zd = pos[2] - z0;
 
-    float c00 = getVal(x0, y0, z0)*(1-xd) + getVal(x1, y0, z0)*xd;
-    float c01 = getVal(x0, y0, z1)*(1-xd) + getVal(x1, y0, z1)*xd;
-    float c10 = getVal(x0, y1, z0)*(1-xd) + getVal(x1, y1, z0)*xd;
-    float c11 = getVal(x0, y1, z1)*(1-xd) + getVal(x1, y1, z1)*xd;
+  float c00 = getVal(x0, y0, z0) * (1 - xd) + getVal(x1, y0, z0) * xd;
+  float c01 = getVal(x0, y0, z1) * (1 - xd) + getVal(x1, y0, z1) * xd;
+  float c10 = getVal(x0, y1, z0) * (1 - xd) + getVal(x1, y1, z0) * xd;
+  float c11 = getVal(x0, y1, z1) * (1 - xd) + getVal(x1, y1, z1) * xd;
 
-    float c0 = c00*(1-yd) + c10*yd;
-    float c1 = c01*(1-yd) + c11*yd;
+  float c0 = c00 * (1 - yd) + c10 * yd;
+  float c1 = c01 * (1 - yd) + c11 * yd;
 
-    return c0*(1-zd) + c1*zd;
+  return c0 * (1 - zd) + c1 * zd;
 }
-
 
 // Add external forces
 void addForces(fluid::Fluid& fluid,
@@ -139,7 +142,7 @@ void addForces(fluid::Fluid& fluid,
 
   auto idx = [&](int x, int y, int z) { return x + W * (y + H * z); };
 
-  #pragma omp parallel for collapse(3)
+#pragma omp parallel for collapse(3)
   for (int x = 0; x < W; ++x)
     for (int y = 0; y < H; ++y)
       for (int z = 0; z < D; ++z)
@@ -163,7 +166,7 @@ void advect(fluid::Fluid& fluid,
 
   auto idx = [&](int x, int y, int z) { return x + W * (y + H * z); };
 
-  #pragma omp parallel for collapse(3)
+#pragma omp parallel for collapse(3)
   for (int x = 0; x < W; ++x)
     for (int y = 0; y < H; ++y)
       for (int z = 0; z < D; ++z)
@@ -192,7 +195,7 @@ void diffuse(fluid::Fluid& fluid,
   auto idx = [&](int x, int y, int z) { return x + W * (y + H * z); };
 
   for (int k = 0; k < iter; ++k)
-  #pragma omp parallel for collapse(3)
+#pragma omp parallel for collapse(3)
     for (int x = 1; x < W - 1; ++x)
       for (int y = 1; y < H - 1; ++y)
         for (int z = 1; z < D - 1; ++z)
@@ -227,8 +230,8 @@ void project(fluid::Fluid& fluid,
 
   auto idx = [&](int x, int y, int z) { return x + W * (y + H * z); };
 
-  // Compute divergence
-  #pragma omp parallel for collapse(3)
+// Compute divergence
+#pragma omp parallel for collapse(3)
   for (int x = 1; x < W - 1; ++x)
     for (int y = 1; y < H - 1; ++y)
       for (int z = 1; z < D - 1; ++z)
@@ -247,7 +250,7 @@ void project(fluid::Fluid& fluid,
   // Jacobi solver for Poisson equation
   for (int k = 0; k < iter; ++k)
   {
-  #pragma omp parallel for collapse(3)
+#pragma omp parallel for collapse(3)
     for (int x = 1; x < W - 1; ++x)
       for (int y = 1; y < H - 1; ++y)
         for (int z = 1; z < D - 1; ++z)
@@ -260,9 +263,9 @@ void project(fluid::Fluid& fluid,
                      p[idx(x, y, z - 1)] + p[idx(x, y, z + 1)] - div[i]) /
                  6.0f;
         }
-      }
-  // Subtract pressure gradient
-  #pragma omp parallel for collapse(3)
+  }
+// Subtract pressure gradient
+#pragma omp parallel for collapse(3)
   for (int x = 1; x < W - 1; ++x)
     for (int y = 1; y < H - 1; ++y)
       for (int z = 1; z < D - 1; ++z)
@@ -293,17 +296,19 @@ void advectDensity(fluid::Fluid& fluid,
   auto idx = [&](int x, int y, int z) { return x + W * (y + H * z); };
 
 #pragma omp parallel for collapse(3)
-for (int x = 0; x < W; ++x)
+  for (int x = 0; x < W; ++x)
     for (int y = 0; y < H; ++y)
-        for (int z = 0; z < D; ++z)
-        {
-            Eigen::Vector3f deltaPos = Eigen::Vector3f(x, y, z) - dt*velocity[idx(x,y,z)];
-            deltaPos[0] = std::clamp(deltaPos[0], 0.f, float(W-1));
-            deltaPos[1] = std::clamp(deltaPos[1], 0.f, float(H-1));
-            deltaPos[2] = std::clamp(deltaPos[2], 0.f, float(D-1));
+      for (int z = 0; z < D; ++z)
+      {
+        Eigen::Vector3f deltaPos =
+            Eigen::Vector3f(x, y, z) - dt * velocity[idx(x, y, z)];
+        deltaPos[0] = std::clamp(deltaPos[0], 0.f, float(W - 1));
+        deltaPos[1] = std::clamp(deltaPos[1], 0.f, float(H - 1));
+        deltaPos[2] = std::clamp(deltaPos[2], 0.f, float(D - 1));
 
-            density[idx(x,y,z)] = sampleDensity(bcs, deltaPos, W, H, D, oldDensity, idx);
-        }
+        density[idx(x, y, z)] =
+            sampleDensity(bcs, deltaPos, W, H, D, oldDensity, idx);
+      }
 }
 
 void diffuseDensity(fluid::Fluid& fluid,
@@ -317,7 +322,7 @@ void diffuseDensity(fluid::Fluid& fluid,
   auto& density = fluid.density().get();
   auto idx = [&](int x, int y, int z) { return x + W * (y + H * z); };
   for (int k = 0; k < iter; ++k)
-  #pragma omp parallel for collapse(3)
+#pragma omp parallel for collapse(3)
     for (int x = 1; x < W - 1; ++x)
       for (int y = 1; y < H - 1; ++y)
         for (int z = 1; z < D - 1; ++z)
