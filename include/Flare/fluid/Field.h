@@ -27,7 +27,7 @@ class Field
     using StorageType = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
     /**
-     * @brief Constructs 3D field with the given dimensions.
+     * @brief  Construct a new Field object
      *
      * Initializes all elements to the provided default value.
      *
