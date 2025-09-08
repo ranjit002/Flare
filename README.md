@@ -1,3 +1,69 @@
-$\begin{equation}
-\frac{\partial\underline{u}}{\partial t} + (\underline{u} \cdot \nabla \underline{u})\underline{u}= - \nabla p + \nu  \nabla ^ 2 \underline{u} + \underline{f}
-\end{equation}$
+# Flare
+
+<div style="display: flex; align-items: center; gap: 20px;">
+
+  <img src="./assets/flare.png" alt="Flare Logo" width="150"/>
+
+  <div>
+    <p style="font-size: 1.1em;">
+      <b>Flare</b> is a <b>high-performance 3D fluid simulation library</b> built in C++.  
+      It focuses on <b>speed, efficiency, and practical simulation features</b> while remaining modular enough for experimentation and extension.
+    </p>
+  </div>
+
+</div>
+
+---
+
+## Features
+
+* **Structure of Arrays (SoA)**: Optimizes memory access patterns and improves SIMD-friendliness for velocity and density fields.
+* **Multithreading**: Uses OpenMP to parallelize solver loops, taking full advantage of multicore CPUs.
+* **Semi-Lagrangian Advection**: Stable method for transporting velocity and density fields even at larger time steps.
+* **Customizable Boundaries**: Predefined walls, inflows, and obstacles designed for minimal overhead.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+* C++17 or newer
+* [CMake 3.15+](https://cmake.org/)
+* [Eigen](https://eigen.tuxfamily.org/)
+* SFML
+* OpenMP
+
+
+## Quick Example
+
+```cpp
+#include <Flare/fluid/Fluid.h>
+#include <Flare/solver/BasicSolver.h>
+#include <Flare/boundary/Box.h>
+
+int main() {
+    fluid::Fluid fluid(32, 32, 32);
+    solver::BasicSolver solver;
+
+    solver.addBC(std::make_unique<boundary::BoxBoundary>(32, 32, 32));
+
+    const float dt = 0.1f;
+    for (int i = 0; i < 100; ++i) 
+    {
+        solver.step(fluid, dt);
+    }
+    return 0;
+}
+```
+
+---
+
+## Roadmap
+
+* GPU acceleration (CUDA / OpenCL)
+* More advanced solver (e.g. Finite element methods)
+* More boundary types and inflow/outflow effects
+* Built-in visualization tools for debugging and demoing fluid behavior
+
+---
