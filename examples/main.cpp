@@ -21,9 +21,8 @@ sf::Color colorFromVelDensity(const Eigen::Vector3f& vel,
     float t = std::clamp(speed / maxSpeed, 0.f, 1.f);
     float dens = std::clamp(density / maxDensity, 0.f, 1.f);
 
-    // Hue from blue (240°) → red (0°)
     float hue = (1.f - t) * 240.f;
-    float c = 1.f;  // full saturation
+    float c = 1.f;
     float h = hue / 60.f;
     float xC = c * (1 - fabs(fmod(h, 2.f) - 1.f));
 
@@ -76,14 +75,13 @@ int main()
     const int W = 64, H = 64, D = 64;
     const float dt = 0.1f;
     const float maxDensity = 100.f;
-    const float maxSpeed = 10.f;
+    const float maxSpeed = 30.f;
 
     // Target window size
     const int targetWindowSize = 1000;
     const int scaleX = targetWindowSize / W;
     const int scaleY = targetWindowSize / H;
-    const int SCALE_FACTOR =
-        std::max(1, std::min(scaleX, scaleY));
+    const int SCALE_FACTOR = std::max(1, std::min(scaleX, scaleY));
 
     fluid::Fluid fluid{W, H, D, 10};
     solver::BasicSolver solver{10.0f, 1.f, 10, 10};
