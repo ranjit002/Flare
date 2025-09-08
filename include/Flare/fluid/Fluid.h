@@ -7,18 +7,36 @@
 namespace fluid
 {
 
+/**
+ * @brief Represents 3D fluid state: density + velocity.
+ *
+ * Provides a single access point for solver to read and modify
+ * state without worrying about raw storage details.
+ */
 class Fluid
 {
    public:
+    /**
+     * @brief Construct a new Fluid object
+     * Initializes all density and velocity elements to the provided default
+     * value.
+     *
+     * @param width
+     * @param height
+     * @param depth
+     * @param default_density
+     * @param default_velocity
+     */
     explicit Fluid(int width,
         int height,
         int depth,
-        float default_density = 0.0f)
+        float default_density = 0.0f,
+        Eigen::Vector3f default_velocity = Eigen::Vector3f::Zero())
         : width_(width),
           height_(height),
           depth_(depth),
           density_(width, height, depth, default_density),
-          velocity_(width, height, depth, Eigen::Vector3f::Zero())
+          velocity_(width, height, depth, default_velocity)
     {
     }
 
@@ -31,12 +49,10 @@ class Fluid
     {
         return density_(x, y, z);
     }
-
     void setDensity(int x, int y, int z, float value)
     {
         density_.set(x, y, z, value);
     }
-
     [[nodiscard]] const FieldFloat& density() const noexcept
     {
         return density_;
@@ -47,12 +63,10 @@ class Fluid
     {
         return velocity_(x, y, z);
     }
-
     void setVelocity(int x, int y, int z, const Eigen::Vector3f& vel)
     {
         velocity_.set(x, y, z, vel);
     }
-
     [[nodiscard]] const FieldVector& velocity() const noexcept
     {
         return velocity_;
@@ -60,21 +74,13 @@ class Fluid
     [[nodiscard]] FieldVector& velocity() noexcept { return velocity_; }
 
     void clearDensity(float value = 0.0f) { density_.fill(value); }
-
     void clearVelocity(const Eigen::Vector3f& value = Eigen::Vector3f::Zero())
     {
         velocity_.fill(value);
     }
-
     void printDensity()
     {
         std::cout << density_.get().transpose() << std::endl;
-    }
-
-    void reset()
-    {
-        clearDensity();
-        clearVelocity();
     }
 
    private:
