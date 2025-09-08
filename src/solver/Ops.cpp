@@ -10,23 +10,24 @@
 namespace solver::ops
 {
 
-inline bool isSolidCell(const std::vector<boundary::IBoundary*>& bcs,
+inline bool isSolidCell(
+    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs,
     int x,
     int y,
     int z)
 {
-  for (auto* bc : bcs)
+  for (auto& bc : bcs)
     if (bc->isSolid(x, y, z)) return true;
   return false;
 }
 
 inline Eigen::Vector3f getWallVelocity(
-    const std::vector<boundary::IBoundary*>& bcs,
+    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs,
     int x,
     int y,
     int z)
 {
-  for (auto* bc : bcs)
+  for (auto& bc : bcs)
     if (bc->isSolid(x, y, z)) return bc->wallVelocity(x, y, z);
   return Eigen::Vector3f::Zero();
 }
@@ -34,7 +35,7 @@ inline Eigen::Vector3f getWallVelocity(
 void addForces(fluid::Fluid& fluid,
     const Eigen::Vector3f& f,
     float dt,
-    const std::vector<boundary::IBoundary*>& bcs)
+    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
   int W = fluid.width(), H = fluid.height(), D = fluid.depth();
   Eigen::Vector3f deltav = -f * dt;
@@ -56,7 +57,7 @@ void addForces(fluid::Fluid& fluid,
 
 void advect(fluid::Fluid& fluid,
     float dt,
-    const std::vector<boundary::IBoundary*>& bcs)
+    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
   int W = fluid.width(), H = fluid.height(), D = fluid.depth();
   auto oldVelocity = fluid.velocity().get();
@@ -114,7 +115,7 @@ void diffuse(fluid::Fluid& fluid,
     float dt,
     float visc,
     int iter,
-    const std::vector<boundary::IBoundary*>& bcs)
+    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
   int W = fluid.width(), H = fluid.height(), D = fluid.depth();
   auto oldVelocity = fluid.velocity().get();
@@ -146,7 +147,7 @@ void diffuse(fluid::Fluid& fluid,
 
 void project(fluid::Fluid& fluid,
     int iter,
-    const std::vector<boundary::IBoundary*>& bcs)
+    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
   int W = fluid.width(), H = fluid.height(), D = fluid.depth();
   auto velocity = fluid.velocity().get();

@@ -3,6 +3,7 @@
 
 #include "Flare/boundary/Box.h"
 #include "Flare/boundary/Circle.h"
+#include "Flare/boundary/IBoundary.h"
 #include "Flare/boundary/Inflow.h"
 #include "Flare/fluid/Fluid.h"
 #include "Flare/solver/BasicSolver.h"
@@ -23,17 +24,23 @@ int main()
   fluid::Fluid fluid{W, H, D};
   solver::BasicSolver solver{0.0f, 10.f, 10, 10};
 
+  std::vector<std::unique_ptr<boundary::IBoundary>> bcs;
+
   Eigen::Vector3f inflowVel(100.0f, 100.0f, 100.0f);
-  auto inflowBoundary = std::make_unique<boundary::InflowBoundary>(inflowVel);
-  auto boxBoundary = std::make_unique<boundary::BoxBoundary>(W, H, D);
+  bcs.push_back(std::make_unique<boundary::InflowBoundary>(inflowVel));
+
+  bcs.push_back(std::make_unique<boundary::BoxBoundary>(W, H, D));
+
   Eigen::Vector3f centre = Eigen::Vector3f{static_cast<float>(W) / 2,
       static_cast<float>(H) / 2,
       static_cast<float>(D) / 2};
-  auto circleBoundary = std::make_unique<boundary::CircleBoundary>(centre, 5);
 
-  solver.addBC(inflowBoundary.get());
-  solver.addBC(boxBoundary.get());
-  solver.addBC(circleBoundary.get());
+  bcs.push_back(std::make_unique<boundary::CircleBoundary>(centre, 5));
+
+  for (auto& bc : bcs)
+  {
+    solver.addBC(std::move(bc));
+  }
 
   sf::RenderWindow window(
       sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}), "Fluid Simulation");
