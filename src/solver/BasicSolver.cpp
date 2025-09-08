@@ -7,14 +7,14 @@ namespace solver
 
 void BasicSolver::step(fluid::Fluid& fluid, float dt)
 {
-  using namespace solver::ops;
-  addForces(fluid, Eigen::Vector3f::Zero(), dt, bcs_);
-  advect(fluid, dt, bcs_);
-  diffuse(fluid, dt, visc_, diffuse_iter_, bcs_);
-  project(fluid, project_iter_, bcs_);
+    using namespace solver::ops;
+    addForces(fluid, Eigen::Vector3f::Zero(), dt, bcs_);
+    advect(fluid, dt, bcs_);
+    diffuse(fluid, dt, visc_, diffuse_iter_, bcs_);
+    project(fluid, project_iter_, bcs_);
 
-  advectDensity(fluid, dt, bcs_);
-  diffuseDensity(fluid, dt, diff_, diffuse_iter_, bcs_);
+    advectDensity(fluid, dt, bcs_);
+    diffuseDensity(fluid, dt, diff_, diffuse_iter_, bcs_);
 }
 
 }  // namespace solver

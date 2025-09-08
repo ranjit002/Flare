@@ -1,4 +1,7 @@
 #include <SFML/Graphics.hpp>
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
 #include <memory>
 
 #include "Flare/boundary/Box.h"
@@ -8,68 +11,140 @@
 #include "Flare/fluid/Fluid.h"
 #include "Flare/solver/BasicSolver.h"
 
-void addDensityInflow(fluid::Fluid& fluid, int H, int D)
+// Convert velocity & density to color
+sf::Color colorFromVelDensity(const Eigen::Vector3f& vel,
+    float maxSpeed,
+    float density,
+    float maxDensity)
 {
-  for (int y = 0; y < H; ++y)
-    for (int z = 0; z < D; ++z) fluid.setDensity(0, y, z, 100.0f);
+    float speed = vel.norm();
+    float t = std::clamp(speed / maxSpeed, 0.f, 1.f);
+    float dens = std::clamp(density / maxDensity, 0.f, 1.f);
+
+    // Hue from blue (240°) → red (0°)
+    float hue = (1.f - t) * 240.f;
+    float c = 1.f;  // full saturation
+    float h = hue / 60.f;
+    float xC = c * (1 - fabs(fmod(h, 2.f) - 1.f));
+
+    float rF, gF, bF;
+    if (h < 1)
+    {
+        rF = c;
+        gF = xC;
+        bF = 0;
+    }
+    else if (h < 2)
+    {
+        rF = xC;
+        gF = c;
+        bF = 0;
+    }
+    else if (h < 3)
+    {
+        rF = 0;
+        gF = c;
+        bF = xC;
+    }
+    else if (h < 4)
+    {
+        rF = 0;
+        gF = xC;
+        bF = c;
+    }
+    else if (h < 5)
+    {
+        rF = xC;
+        gF = 0;
+        bF = c;
+    }
+    else
+    {
+        rF = c;
+        gF = 0;
+        bF = xC;
+    }
+
+    return sf::Color(static_cast<std::uint8_t>(rF * 255.f * dens),
+        static_cast<std::uint8_t>(gF * 255.f * dens),
+        static_cast<std::uint8_t>(bF * 255.f * dens));
 }
 
 int main()
 {
-  const int SCALE_FACTOR = 10;
-  const int FRAME_RATE = 10;
-  const int W = 32, H = 32, D = 32;
-  const float dt = 0.1f;
+    // Fluid dimensions
+    const int W = 64, H = 64, D = 64;
+    const float dt = 0.1f;
+    const float maxDensity = 100.f;
+    const float maxSpeed = 10.f;
 
-  fluid::Fluid fluid{W, H, D};
-  solver::BasicSolver solver{0.1f, 100.f, 10, 10};
+    // Target window size
+    const int targetWindowSize = 1000;
+    const int scaleX = targetWindowSize / W;
+    const int scaleY = targetWindowSize / H;
+    const int SCALE_FACTOR =
+        std::max(1, std::min(scaleX, scaleY));
 
-  std::vector<std::unique_ptr<boundary::IBoundary>> bcs;
+    fluid::Fluid fluid{W, H, D, 10};
+    solver::BasicSolver solver{10.0f, 1.f, 10, 10};
 
+    // Boundaries
+    std::vector<std::unique_ptr<boundary::IBoundary>> bcs;
+    bcs.push_back(std::make_unique<boundary::InflowBoundary>(
+        Eigen::Vector3f(maxSpeed, 0, 0), 100));
+    bcs.push_back(std::make_unique<boundary::CircleBoundary>(
+        Eigen::Vector3f(W / 2.f, H / 2.f, D / 2.f), 10));
+    bcs.push_back(std::make_unique<boundary::BoxBoundary>(W, H, D));
 
-  // Left stream
-  Eigen::Vector3f inflowVel(100.0f, 100.0f, 100.0f);
-  bcs.push_back(std::make_unique<boundary::InflowBoundary>(inflowVel, 100));
+    for (auto& bc : bcs) solver.addBC(std::move(bc));
 
-  // Box
-  bcs.push_back(std::make_unique<boundary::BoxBoundary>(W, H, D));
+    // SFML window
+    sf::RenderWindow window(sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}),
+        "Fluid Simulation");
+    window.setFramerateLimit(60);
 
-  // Circle obstacle
-  Eigen::Vector3f centre = Eigen::Vector3f{static_cast<float>(W) / 2,
-      static_cast<float>(H) / 2,
-      static_cast<float>(D) / 2};
-
-  bcs.push_back(std::make_unique<boundary::CircleBoundary>(centre, 1));
-
-  for (auto& bc : bcs) solver.addBC(std::move(bc));
-
-  sf::RenderWindow window(
-      sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}), "Fluid Simulation");
-  window.setFramerateLimit(FRAME_RATE);
-
-  while (window.isOpen())
-  {
-    while (const std::optional<sf::Event> event = window.pollEvent())
-      if (event->is<sf::Event::Closed>()) window.close();
-
-    window.clear();
-    addDensityInflow(fluid, H, D);
-    solver.step(fluid, dt);
-
-    float maxDensity = 100.f;
     sf::RectangleShape pixel(sf::Vector2f(SCALE_FACTOR, SCALE_FACTOR));
 
-    for (int y = 0; y < H; ++y)
-      for (int x = 0; x < W; ++x)
-      {
-        float val = fluid.getDensity(x, y, D / 2) / maxDensity;
-        pixel.setFillColor(sf::Color(static_cast<int>(val * 255.f),
-            static_cast<int>(val * 255.f),
-            static_cast<int>(val * 255.f)));
-        pixel.setPosition({x * pixel.getSize().x, y * pixel.getSize().y});
-        window.draw(pixel);
-      }
+    while (window.isOpen())
+    {
+        while (const std::optional<sf::Event> event = window.pollEvent())
+            if (event->is<sf::Event::Closed>())
+                window.close();
 
-    window.display();
-  }
+        solver.step(fluid, dt);
+        window.clear();
+
+        for (int y = 0; y < H; ++y)
+        {
+            for (int x = 0; x < W; ++x)
+            {
+                bool isBorder = (x == 0 || x == W - 1 || y == 0 || y == H - 1);
+                bool isSolid = false;
+                if (!isBorder)
+                {
+                    for (auto& bc : solver.boundaries())
+                        if (bc->isSolid(x, y, D / 2))
+                        {
+                            isSolid = true;
+                            break;
+                        }
+                }
+
+                sf::Color fillColor =
+                    isSolid
+                        ? sf::Color::White
+                        : colorFromVelDensity(fluid.getVelocity(x, y, D / 2),
+                              maxSpeed,
+                              fluid.getDensity(x, y, D / 2),
+                              maxDensity);
+
+                pixel.setFillColor(fillColor);
+                pixel.setPosition(
+                    {x * float(SCALE_FACTOR), y * float(SCALE_FACTOR)});
+                window.draw(pixel);
+            }
+        }
+
+        window.display();
+    }
 }
