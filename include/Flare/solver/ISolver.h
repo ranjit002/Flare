@@ -1,6 +1,6 @@
 #pragma once
-#include "../boundary/BoundaryCondition.h"
-#include "../fluid/IFluid.h"
+#include "../boundary/IBoundary.h"
+#include "../fluid/Fluid.h"
 
 namespace solver
 {
@@ -9,16 +9,11 @@ class ISolver
 {
  public:
   virtual ~ISolver() = default;
-  virtual void step(fluid::IFluid& fluid, float dt) = 0;
-  void addBC(boundary::BoundaryCondition* bc) { bcs_.push_back(bc); }
-
-  void applyBC(fluid::IFluid& fluid)
-  {
-    for (auto* bc : bcs_) bc->apply(fluid);
-  }
+  virtual void step(fluid::Fluid& fluid, float dt) = 0;
+  void addBC(boundary::IBoundary* bc) { bcs_.push_back(bc); }
 
  protected:
-  std::vector<boundary::BoundaryCondition*> bcs_;
+  std::vector<boundary::IBoundary*> bcs_;
 };
 
 }  // namespace solver

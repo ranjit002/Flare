@@ -1,68 +1,84 @@
 #pragma once
-#include <Eigen/Core>
-#include <vector>
+#include <Eigen/Dense>
+#include <cassert>
+#include <stdexcept>
 
 namespace fluid
 {
-
-class Field1D
+template <typename T>
+class Field
 {
  public:
-  Field1D(int w, int h, int d)
-      : width(w), height(h), depth(d), phi(w * h * d, 0.0f)
+  using StorageType = Eigen::Matrix<T, Eigen::Dynamic, 1>;
+
+  explicit Field(int w, int h, int d, const T& default_value = T{})
+      : width_(w),
+        height_(h),
+        depth_(d),
+        data_(static_cast<Eigen::Index>(w) * h * d)
   {
+    if (w <= 0 || h <= 0 || d <= 0)
+    {
+      throw std::invalid_argument("Field dimensions must be positive.");
+    }
+    data_.setConstant(default_value);
   }
 
-  void set(int x, int y, int z, float value) { phi[idx(x, y, z)] = value; }
+  [[nodiscard]] int width() const noexcept { return width_; }
+  [[nodiscard]] int height() const noexcept { return height_; }
+  [[nodiscard]] int depth() const noexcept { return depth_; }
+  [[nodiscard]] Eigen::Index size() const noexcept { return data_.size(); }
 
-  float operator()(int x, int y, int z) const { return phi[idx(x, y, z)]; }
+  void set(int x, int y, int z, const T& value)
+  {
+    assert(is_valid_index(x, y, z));
+    data_[idx(x, y, z)] = value;
+  }
+
+  void set(const StorageType& new_data)
+  {
+    if (new_data.size() != data_.size())
+    {
+      throw std::invalid_argument("New data must match field dimensions.");
+    }
+    data_ = new_data;
+  }
+
+  [[nodiscard]] const T& operator()(int x, int y, int z) const
+  {
+    assert(is_valid_index(x, y, z));
+    return data_[idx(x, y, z)];
+  }
+
+  [[nodiscard]] T& operator()(int x, int y, int z)
+  {
+    assert(is_valid_index(x, y, z));
+    return data_[idx(x, y, z)];
+  }
+
+  [[nodiscard]] StorageType& get() noexcept { return data_; }
+  [[nodiscard]] const StorageType& get() const noexcept { return data_; }
+
+  void fill(const T& value) { data_.setConstant(value); }
 
  private:
-  int width, height;
-  [[maybe_unused]] int depth;
-  std::vector<float> phi;
+  int width_, height_, depth_;
+  StorageType data_;
 
-  inline int idx(int x, int y, int z) const
+  [[nodiscard]] inline int idx(int x, int y, int z) const noexcept
   {
-    return x + width * (y + height * z);
+    return x + width_ * (y + height_ * z);
+  }
+
+  [[nodiscard]] bool is_valid_index(int x, int y, int z) const noexcept
+  {
+    return (x >= 0 && x < width_) && (y >= 0 && y < height_) &&
+           (z >= 0 && z < depth_);
   }
 };
 
-class Field3D
-{
- public:
-  Field3D(int w, int h, int d)
-      : width(w),
-        height(h),
-        depth(d),
-        vx(w * h * d, 0.0f),
-        vy(w * h * d, 0.0f),
-        vz(w * h * d, 0.0f)
-  {
-  }
-
-  void set(int x, int y, int z, const Eigen::Vector3f& vector)
-  {
-    vx[idx(x, y, z)] = vector.x();
-    vy[idx(x, y, z)] = vector.y();
-    vz[idx(x, y, z)] = vector.z();
-  }
-
-  Eigen::Vector3f operator()(int x, int y, int z) const
-  {
-    return Eigen::Vector3f(
-        vx[idx(x, y, z)], vy[idx(x, y, z)], vz[idx(x, y, z)]);
-  }
-
- private:
-  int width, height;
-  [[maybe_unused]] int depth;
-  std::vector<float> vx, vy, vz;
-
-  inline int idx(int x, int y, int z) const
-  {
-    return x + width * (y + height * z);
-  }
-};
+using FieldFloat = Field<float>;
+using FieldBool = Field<bool>;
+using FieldVector = Field<Eigen::Vector3f>;
 
 }  // namespace fluid

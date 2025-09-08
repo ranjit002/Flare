@@ -3,10 +3,11 @@
 
 #include "Flare/fluid/Field.h"
 
-TEST_CASE("Field3D stores and retrieves velocity correctly", "[Field3D]")
+TEST_CASE("FieldVector stores and retrieves velocity correctly",
+    "[FieldVector]")
 {
   const int W = 10, H = 10, D = 10;
-  fluid::Field3D field(W, H, D);
+  fluid::FieldVector field(W, H, D);
 
   Eigen::Vector3f velocity(1.0f, 2.0f, 3.0f);
 

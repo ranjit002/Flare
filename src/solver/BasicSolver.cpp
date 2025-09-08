@@ -5,18 +5,16 @@
 namespace solver
 {
 
-void BasicSolver::step(fluid::IFluid& fluid, float dt)
+void BasicSolver::step(fluid::Fluid& fluid, float dt)
 {
   using namespace solver::ops;
-  addForces(fluid, Eigen::Vector3f(0.f, -9.81f, 0.f), dt);
-  advect(fluid, dt);
-  diffuse(fluid, dt, visc_, diffuse_iter_);
-  project(fluid, project_iter_);
+  addForces(fluid, Eigen::Vector3f(0.f, -9.81f, 0.f), dt, bcs_);
+  advect(fluid, dt, bcs_);
+  diffuse(fluid, dt, visc_, diffuse_iter_, bcs_);
+  project(fluid, project_iter_, bcs_);
 
   advectDensity(fluid, dt);
   diffuseDensity(fluid, dt, diff_, diffuse_iter_);
-
-  applyBC(fluid);
 }
 
 }  // namespace solver

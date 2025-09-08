@@ -1,16 +1,28 @@
 #pragma once
 #include <Eigen/Core>
 
-#include "Flare/fluid/IFluid.h"
+#include "../boundary/IBoundary.h"
+#include "Flare/fluid/Fluid.h"
 
 namespace solver::ops
 {
 
-void addForces(fluid::IFluid& fluid, const Eigen::Vector3f& f, float dt);
-void advect(fluid::IFluid& fluid, float dt);
-void diffuse(fluid::IFluid& fluid, float dt, float visc, int iter);
-void project(fluid::IFluid& fluid, int iter);
-void advectDensity(fluid::IFluid& fluid, float dt);
-void diffuseDensity(fluid::IFluid& fluid, float dt, float diff, int iter);
+void addForces(fluid::Fluid& fluid,
+    const Eigen::Vector3f& f,
+    float dt,
+    const std::vector<boundary::IBoundary*>& bcs);
+void advect(fluid::Fluid& fluid,
+    float dt,
+    const std::vector<boundary::IBoundary*>& bcs);
+void diffuse(fluid::Fluid& fluid,
+    float dt,
+    float visc,
+    int iter,
+    const std::vector<boundary::IBoundary*>& bcs);
+void project(fluid::Fluid& fluid,
+    int iter,
+    const std::vector<boundary::IBoundary*>& bcs);
+void advectDensity(fluid::Fluid& fluid, float dt);
+void diffuseDensity(fluid::Fluid& fluid, float dt, float diff, int iter);
 
 }  // namespace solver::ops

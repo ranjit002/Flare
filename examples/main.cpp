@@ -1,18 +1,39 @@
 #include <SFML/Graphics.hpp>
+#include <memory>
 
+#include "Flare/boundary/Box.h"
+#include "Flare/boundary/Circle.h"
+#include "Flare/boundary/Inflow.h"
 #include "Flare/fluid/Fluid.h"
 #include "Flare/solver/BasicSolver.h"
+
+void addDensityInflow(fluid::Fluid& fluid, int H, int D)
+{
+  for (int y = 0; y < H; ++y)
+    for (int z = 0; z < D; ++z) fluid.setDensity(0, y, z, 100.0f);
+}
 
 int main()
 {
   const int SCALE_FACTOR = 10;
-  const int FRAME_RATE = 30;
-  const int W = 32, H = 32, D = 2;
+  const int FRAME_RATE = 5;
+  const int W = 32, H = 32, D = 32;
   const float dt = 0.1f;
 
   fluid::Fluid fluid{W, H, D};
-  fluid.setDensity(W / 2, H / 2, D / 2, 100.0f);
-  solver::BasicSolver solver{};
+  solver::BasicSolver solver{0.0f, 10.f, 10, 10};
+
+  Eigen::Vector3f inflowVel(100.0f, 100.0f, 100.0f);
+  auto inflowBoundary = std::make_unique<boundary::InflowBoundary>(inflowVel);
+  auto boxBoundary = std::make_unique<boundary::BoxBoundary>(W, H, D);
+  Eigen::Vector3f centre = Eigen::Vector3f{static_cast<float>(W) / 2,
+      static_cast<float>(H) / 2,
+      static_cast<float>(D) / 2};
+  auto circleBoundary = std::make_unique<boundary::CircleBoundary>(centre, 5);
+
+  solver.addBC(inflowBoundary.get());
+  solver.addBC(boxBoundary.get());
+  solver.addBC(circleBoundary.get());
 
   sf::RenderWindow window(
       sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}), "Fluid Simulation");
@@ -24,6 +45,7 @@ int main()
       if (event->is<sf::Event::Closed>()) window.close();
 
     window.clear();
+    addDensityInflow(fluid, H, D);
     solver.step(fluid, dt);
 
     float maxDensity = 100.f;

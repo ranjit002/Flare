@@ -21,8 +21,9 @@ class BasicSolver : public ISolver
   {
   }
 
-  void step(fluid::IFluid& fluid, float dt) override;
+  void step(fluid::Fluid& fluid, float dt) override;
 
+ private:
   float visc_;
   float diff_;
   int diffuse_iter_;
