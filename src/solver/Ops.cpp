@@ -463,7 +463,7 @@ void advectDensity(fluid::Fluid& fluid,
  *
  * This function solves the diffusion equation for the density:
  *
- * d_{new} = \frac{\sum_{neighbors} d + dt \cdot diff \cdot d_{old}}{6 + dt
+ * d_{new} = \frac{\sum_{neighbors} d + dt \cdot diffusion \cdot d_{old}}{6 + dt
  * \cdot diff}
  *
  * @note
@@ -472,14 +472,14 @@ void advectDensity(fluid::Fluid& fluid,
  *
  * @param fluid Fluid container object (see Flare/fluid/Fluid.h)
  * @param dt Simulation timestep
- * @param diff Diffusion coefficient
+ * @param diffusion Diffusion coefficient
  * @param iter
  * @param bcs List of boundary condition objects to enforce (see
  * Flare/boundary/IBoundary.h)
  */
 void diffuseDensity(fluid::Fluid& fluid,
     float dt,
-    float diff,
+    float diffusion,
     int iter,
     const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
@@ -501,8 +501,8 @@ void diffuseDensity(fluid::Fluid& fluid,
                             density[idx(x, y + 1, z)] +
                             density[idx(x, y, z - 1)] +
                             density[idx(x, y, z + 1)] +
-                            dt * diff * oldDensity[i]) /
-                        (6 + dt * diff);
+                            dt * diffusion * oldDensity[i]) /
+                        (6 + dt * diffusion);
 
                     if (isSolidCell(bcs, x, y, z))
                         density[i] = getWallDensity(bcs, x, y, z);

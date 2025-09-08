@@ -9,23 +9,23 @@ namespace solver
 class BasicSolver : public ISolver
 {
    public:
-    BasicSolver(float visc, float diff, int diffuse_iter, int project_iter)
-        : visc_{visc},
-          diff_{diff},
+    BasicSolver(float viscosity, float diffusion, int diffuse_iter, int project_iter)
+        : viscosity_{viscosity},
+          diffusion_{diffusion},
           diffuse_iter_{diffuse_iter},
           project_iter_{project_iter}
     {
     }
     BasicSolver()
-        : visc_{0.1f}, diff_{0.001f}, diffuse_iter_{10}, project_iter_{10}
+        : viscosity_{0.1f}, diffusion_{0.001f}, diffuse_iter_{10}, project_iter_{10}
     {
     }
 
     void step(fluid::Fluid& fluid, float dt) override;
 
    private:
-    float visc_;
-    float diff_;
+    float viscosity_;
+    float diffusion_;
     int diffuse_iter_;
     int project_iter_;
 };
