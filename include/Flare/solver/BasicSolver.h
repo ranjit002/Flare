@@ -9,7 +9,10 @@ namespace solver
 class BasicSolver : public ISolver
 {
    public:
-    BasicSolver(float viscosity, float diffusion, int diffuse_iter, int project_iter)
+    BasicSolver(float viscosity,
+        float diffusion,
+        int diffuse_iter,
+        int project_iter)
         : viscosity_{viscosity},
           diffusion_{diffusion},
           diffuse_iter_{diffuse_iter},
@@ -17,7 +20,10 @@ class BasicSolver : public ISolver
     {
     }
     BasicSolver()
-        : viscosity_{0.1f}, diffusion_{0.001f}, diffuse_iter_{10}, project_iter_{10}
+        : viscosity_{0.1f},
+          diffusion_{0.001f},
+          diffuse_iter_{10},
+          project_iter_{10}
     {
     }
 
