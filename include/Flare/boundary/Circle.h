@@ -6,6 +6,13 @@
 namespace boundary
 {
 
+/**
+ * @brief Spherical obstacle inside fluid.
+ *
+ * Represents a solid circular (spherical in 3D) object.
+ * Any cell whose center lies inside the radius is considered solid.
+ *
+ */
 class CircleBoundary : public IBoundary
 {
    public:

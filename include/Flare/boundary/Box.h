@@ -6,15 +6,25 @@
 namespace boundary
 {
 
+/**
+ * @brief Solid box boundary.
+ *
+ * Marks all outer cells at the grid edges as solid (walls) and sets velocity at
+ * wall to {0, 0, 0}. Keeps fluid within simulation domain.
+ *
+ */
 class BoxBoundary : public IBoundary
 {
    public:
-    BoxBoundary(int W, int H, int D) : W_(W), H_(H), D_(D) {}
+    BoxBoundary(int width, int height, int depth)
+        : width_(width), height_(height), depth_(depth)
+    {
+    }
 
     bool isSolid(int x, int y, int z) const override
     {
-        return x == 0 || x == W_ - 1 || y == 0 || y == H_ - 1 || z == 0 ||
-               z == D_ - 1;
+        return x == 0 || x == width_ - 1 || y == 0 || y == height_ - 1 ||
+               z == 0 || z == depth_ - 1;
     }
 
     Eigen::Vector3f wallVelocity(int x, int y, int z) const override
@@ -23,7 +33,7 @@ class BoxBoundary : public IBoundary
     }
 
    private:
-    int W_, H_, D_;
+    int width_, height_, depth_;
 };
 
 }  // namespace boundary

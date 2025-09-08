@@ -16,7 +16,7 @@ namespace boundary
  *
  *
  * @note
- * - Coordinates `(x, y, z)` correspond to **cell indices**, not physical
+ * - Coordinates `(x, y, z)` correspond to cell indices, not physical
  * positions.
  * - Derived classes must override `isSolid()` and `wallVelocity()`.
  * - `wallDensity()` has a default implementation returning 0.0f, but may be
