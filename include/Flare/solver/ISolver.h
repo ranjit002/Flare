@@ -36,30 +36,24 @@ class ISolver
     virtual void step(fluid::Fluid& fluid, float dt) = 0;
 
     /**
-     * @brief Adds new BC object to solver.
-     *
-     * Function transfers ownership of BC object
-     * to the solver. Solver will apply all registered BCs
-     * during each call to step().
-     *
-     * @param bc Unique pointer to BC object (IBoundary)
-     *
-     * @note
-     * - Ownership is transferred, DON'T use the pointer after
-     * passing it!
-     * - Can add multiple BCs objectt.
+     * @brief Adds a single boundary condition to the solver.
      */
-    void addBC(std::unique_ptr<boundary::IBoundary> bc)
+    template <typename BC>
+    void addBC(BC&& bc)
     {
-        bcs_.push_back(std::move(bc));
+        static_assert(std::is_base_of_v<boundary::IBoundary, std::decay_t<BC>>,
+            "BC must derive from boundary::IBoundary");
+        bcs_.push_back(
+            std::make_unique<std::decay_t<BC>>(std::forward<BC>(bc)));
     }
 
+    /**
+     * @brief Adds multiple boundary conditions in a single call.
+     */
     template <typename... BCs>
     void addBCs(BCs&&... bcs)
     {
-        (bcs_.push_back(
-             std::make_unique<std::decay_t<BCs>>(std::forward<BCs>(bcs))),
-            ...);
+        (addBC(std::forward<BCs>(bcs)), ...);
     }
 
     /**
