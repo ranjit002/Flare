@@ -21,16 +21,9 @@ class BoxBoundary : public IBoundary
     {
     }
 
-    bool isSolid(int x, int y, int z) const override
-    {
-        return x == 0 || x == width_ - 1 || y == 0 || y == height_ - 1 ||
-               z == 0 || z == depth_ - 1;
-    }
+    bool isSolid(int x, int y, int z) const override;
 
-    Eigen::Vector3f wallVelocity(int x, int y, int z) const override
-    {
-        return Eigen::Vector3f::Zero();
-    }
+    Eigen::Vector3f wallVelocity(int x, int y, int z) const override;
 
    private:
     int width_, height_, depth_;
