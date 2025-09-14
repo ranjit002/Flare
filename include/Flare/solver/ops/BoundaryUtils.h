@@ -8,7 +8,8 @@
 namespace solver::ops
 {
 
-inline bool isSolidCell(const std ::vector<std::unique_ptr<boundary::IBoundary>>& bcs,
+inline bool isSolidCell(
+    const std ::vector<std::unique_ptr<boundary::IBoundary>>& bcs,
     int x,
     int y,
     int z)

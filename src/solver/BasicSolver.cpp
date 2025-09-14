@@ -1,6 +1,6 @@
 #include "Flare/solver/BasicSolver.h"
 
-#include "Flare/solver/Ops.h"
+#include "Flare/solver/ops.h"
 
 namespace solver
 {
@@ -12,7 +12,7 @@ void BasicSolver::step(fluid::Fluid& fluid, float dt)
     addForces(fluid, Eigen::Vector3f::Zero(), dt, bcs_);
     advectVelocity(fluid, dt, bcs_);
     diffuseVelocity(fluid, dt, viscosity_, diffuse_iter_, bcs_);
-    project(fluid, project_iter_, bcs_);
+    projectVelocity(fluid, project_iter_, bcs_);
 
     advectDensity(fluid, dt, bcs_);
     diffuseDensity(fluid, dt, diffusion_, diffuse_iter_, bcs_);
