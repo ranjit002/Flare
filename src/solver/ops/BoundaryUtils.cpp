@@ -1,9 +1,9 @@
 #include "Flare/solver/ops/BoundaryUtils.h"
 
-namespace solver::ops {
+namespace solver::ops
+{
 
-bool isSolidCell(
-    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs,
+bool isSolidCell(const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs,
     int x,
     int y,
     int z)
@@ -38,4 +38,4 @@ float getWallDensity(
     return 0.f;
 }
 
-} // namespace solver::ops
+}  // namespace solver::ops

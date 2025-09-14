@@ -1,13 +1,14 @@
 #pragma once
-#include <vector>
-#include <memory>
-#include "Flare/boundary/IBoundary.h"
 #include <Eigen/Core>
+#include <memory>
+#include <vector>
 
-namespace solver::ops {
+#include "Flare/boundary/IBoundary.h"
 
-bool isSolidCell(
-    const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs,
+namespace solver::ops
+{
+
+bool isSolidCell(const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs,
     int x,
     int y,
     int z);
@@ -24,4 +25,4 @@ float getWallDensity(
     int y,
     int z);
 
-} // namespace solver::ops
+}  // namespace solver::ops
