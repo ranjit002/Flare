@@ -6,3 +6,4 @@ main.dSYM
 .clangd
 build/
 .cache/
+format.sh
