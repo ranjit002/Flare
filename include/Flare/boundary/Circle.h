@@ -13,25 +13,17 @@ namespace boundary
  * Any cell whose center lies inside the radius is considered solid.
  *
  */
-class CircleBoundary : public IBoundary
+class Circle : public IBoundary
 {
    public:
-    CircleBoundary(Eigen::Vector3f centre, float radius)
+    Circle(Eigen::Vector3f centre, float radius)
         : centre_(centre), radius_(radius)
     {
     }
 
-    bool isSolid(int x, int y, int z) const override
-    {
-        float dist =
-            (centre_ - Eigen::Vector3f(float(x), float(y), float(z))).norm();
-        return dist < radius_;
-    }
+    bool isSolid(int x, int y, int z) const override;
 
-    Eigen::Vector3f wallVelocity(int x, int y, int z) const override
-    {
-        return Eigen::Vector3f::Zero();
-    }
+    Eigen::Vector3f wallVelocity(int x, int y, int z) const override;
 
    private:
     Eigen::Vector3f centre_;

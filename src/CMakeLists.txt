@@ -3,6 +3,7 @@ add_library(Flare STATIC
     solver/Ops.cpp
 
     boundary/Box.cpp
+    boundary/Circle.cpp
 )
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -ffast-math")
