@@ -45,7 +45,7 @@ class ISolver
      * @param bc Unique pointer to BC object (IBoundary)
      *
      * @note
-     * - Ownership is transferred, DON'G use the pointer after
+     * - Ownership is transferred, DON'T use the pointer after
      * passing it!
      * - Can add multiple BCs objectt.
      */
