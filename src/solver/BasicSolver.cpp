@@ -10,8 +10,8 @@ void BasicSolver::step(fluid::Fluid& fluid, float dt)
     using namespace solver::ops;
 
     addForces(fluid, Eigen::Vector3f::Zero(), dt, bcs_);
-    advect(fluid, dt, bcs_);
-    diffuse(fluid, dt, viscosity_, diffuse_iter_, bcs_);
+    advectVelocity(fluid, dt, bcs_);
+    diffuseVelocity(fluid, dt, viscosity_, diffuse_iter_, bcs_);
     project(fluid, project_iter_, bcs_);
 
     advectDensity(fluid, dt, bcs_);

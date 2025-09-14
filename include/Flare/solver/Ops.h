@@ -56,7 +56,7 @@ void addForces(fluid::Fluid& fluid,
  * @param bcs List of boundary condition objects to enforce (see
  * Flare/boundary/IBoundary.h)
  */
-void advect(fluid::Fluid& fluid,
+void advectVelocity(fluid::Fluid& fluid,
     float dt,
     const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs);
 
@@ -80,7 +80,7 @@ void advect(fluid::Fluid& fluid,
  * @param bcs List of boundary condition objects to enforce (see
  * Flare/boundary/IBoundary.h)
  */
-void diffuse(fluid::Fluid& fluid,
+void diffuseVelocity(fluid::Fluid& fluid,
     float dt,
     float visc,
     int iter,

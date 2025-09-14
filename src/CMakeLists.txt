@@ -5,6 +5,7 @@ add_library(Flare STATIC
     boundary/Box.cpp
     boundary/Circle.cpp
     boundary/Inflow.cpp
+    
     fluid/Fluid.cpp
 )
 

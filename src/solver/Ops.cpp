@@ -191,7 +191,7 @@ void addForces(fluid::Fluid& fluid,
             }
 }
 
-void advect(fluid::Fluid& fluid,
+void advectVelocity(fluid::Fluid& fluid,
     float dt,
     const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
@@ -218,7 +218,7 @@ void advect(fluid::Fluid& fluid,
             }
 }
 
-void diffuse(fluid::Fluid& fluid,
+void diffuseVelocity(fluid::Fluid& fluid,
     float dt,
     float viscosity,
     int iter,
