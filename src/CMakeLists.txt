@@ -1,6 +1,7 @@
 add_library(Flare STATIC    
     solver/BasicSolver.cpp    
     solver/Ops.cpp
+    solver/ops/BoundaryUtils.cpp
 
     boundary/Box.cpp
     boundary/Circle.cpp
