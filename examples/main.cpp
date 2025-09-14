@@ -92,7 +92,7 @@ int main()
         Eigen::Vector3f(maxSpeed, 0, 0), 100));
     bcs.push_back(std::make_unique<boundary::CircleBoundary>(
         Eigen::Vector3f(W / 2.f, H / 2.f, D / 2.f), 10));
-    bcs.push_back(std::make_unique<boundary::BoxBoundary>(W, H, D));
+    bcs.push_back(std::make_unique<boundary::Box>(W, H, D));
 
     for (auto& bc : bcs) solver.addBC(std::move(bc));
 

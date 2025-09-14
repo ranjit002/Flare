@@ -13,10 +13,10 @@ namespace boundary
  * wall to {0, 0, 0}. Keeps fluid within simulation domain.
  *
  */
-class BoxBoundary : public IBoundary
+class Box : public IBoundary
 {
    public:
-    BoxBoundary(int width, int height, int depth)
+    Box(int width, int height, int depth)
         : width_(width), height_(height), depth_(depth)
     {
     }
