@@ -30,7 +30,14 @@ class Fluid
         int height,
         int depth,
         float default_density = 0.0f,
-        Eigen::Vector3f default_velocity = Eigen::Vector3f::Zero());
+        Eigen::Vector3f default_velocity = Eigen::Vector3f::Zero())
+        : width_(width),
+          height_(height),
+          depth_(depth),
+          density_(width, height, depth, default_density),
+          velocity_(width, height, depth, default_velocity)
+    {
+    }
 
     [[nodiscard]] int width() const noexcept { return width_; }
     [[nodiscard]] int height() const noexcept { return height_; }

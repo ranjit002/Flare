@@ -5,19 +5,6 @@
 namespace fluid
 {
 
-Fluid::Fluid(int width,
-    int height,
-    int depth,
-    float default_density,
-    Eigen::Vector3f default_velocity)
-    : width_(width),
-      height_(height),
-      depth_(depth),
-      density_(width, height, depth, default_density),
-      velocity_(width, height, depth, default_velocity)
-{
-}
-
 size_t Fluid::size() const noexcept { return density_.size(); }
 
 float Fluid::getDensity(int x, int y, int z) const { return density_(x, y, z); }
