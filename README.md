@@ -44,12 +44,14 @@
 #include <Flare/boundary.h>
 
 int main() {
-    fluid::Fluid fluid(32, 32, 32);
+    const int W = 32, H = 32, D = 32;
+    
+    fluid::Fluid fluid(W, H, D);
     solver::BasicSolver solver;
 
-    solver.addBC(boundary::Box(32, 32, 32));
+    solver.addBC(boundary::Box(W, H, D));
 
-    const float dt = 0.1f;
+    float dt = 0.1f;
     for (int i = 0; i < 100; ++i) 
     {
         solver.step(fluid, dt);
