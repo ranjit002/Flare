@@ -3,5 +3,6 @@ main.dSYM
 
 .DS_Store
 .clang-format
+.clangd
 build/
 .cache/
