@@ -1,5 +1,6 @@
 #include "Flare/fluid/Fluid.h"
 
+#include <iomanip>
 #include <iostream>
 
 namespace fluid
@@ -33,7 +34,8 @@ void Fluid::clearVelocity(const Eigen::Vector3f& value)
 
 void Fluid::printDensity()
 {
-    std::cout << density_.get().transpose() << std::endl;
+    std::cout << std::fixed << std::setprecision(1)
+              << density_.get().transpose() << std::endl;
 }
 
 }  // namespace fluid
