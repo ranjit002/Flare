@@ -12,59 +12,7 @@
 sf::Color colorFromVelDensity(const Eigen::Vector3f& vel,
     float maxSpeed,
     float density,
-    float maxDensity)
-{
-    float speed = vel.norm();
-    float t = std::clamp(speed / maxSpeed, 0.f, 1.f);
-    float dens = std::clamp(density / maxDensity, 0.f, 1.f);
-
-    float hue = (1.f - t) * 240.f;
-    float c = 1.f;
-    float h = hue / 60.f;
-    float xC = c * (1 - fabs(fmod(h, 2.f) - 1.f));
-
-    float rF, gF, bF;
-    if (h < 1)
-    {
-        rF = c;
-        gF = xC;
-        bF = 0;
-    }
-    else if (h < 2)
-    {
-        rF = xC;
-        gF = c;
-        bF = 0;
-    }
-    else if (h < 3)
-    {
-        rF = 0;
-        gF = c;
-        bF = xC;
-    }
-    else if (h < 4)
-    {
-        rF = 0;
-        gF = xC;
-        bF = c;
-    }
-    else if (h < 5)
-    {
-        rF = xC;
-        gF = 0;
-        bF = c;
-    }
-    else
-    {
-        rF = c;
-        gF = 0;
-        bF = xC;
-    }
-
-    return sf::Color(static_cast<std::uint8_t>(rF * 255.f * dens),
-        static_cast<std::uint8_t>(gF * 255.f * dens),
-        static_cast<std::uint8_t>(bF * 255.f * dens));
-}
+    float maxDensity);
 
 int main()
 {
@@ -142,4 +90,61 @@ int main()
 
         window.display();
     }
+}
+
+sf::Color colorFromVelDensity(const Eigen::Vector3f& vel,
+    float maxSpeed,
+    float density,
+    float maxDensity)
+{
+    float speed = vel.norm();
+    float t = std::clamp(speed / maxSpeed, 0.f, 1.f);
+    float dens = std::clamp(density / maxDensity, 0.f, 1.f);
+
+    float hue = (1.f - t) * 240.f;
+    float c = 1.f;
+    float h = hue / 60.f;
+    float xC = c * (1 - fabs(fmod(h, 2.f) - 1.f));
+
+    float rF, gF, bF;
+    if (h < 1)
+    {
+        rF = c;
+        gF = xC;
+        bF = 0;
+    }
+    else if (h < 2)
+    {
+        rF = xC;
+        gF = c;
+        bF = 0;
+    }
+    else if (h < 3)
+    {
+        rF = 0;
+        gF = c;
+        bF = xC;
+    }
+    else if (h < 4)
+    {
+        rF = 0;
+        gF = xC;
+        bF = c;
+    }
+    else if (h < 5)
+    {
+        rF = xC;
+        gF = 0;
+        bF = c;
+    }
+    else
+    {
+        rF = c;
+        gF = 0;
+        bF = xC;
+    }
+
+    return sf::Color(static_cast<std::uint8_t>(rF * 255.f * dens),
+        static_cast<std::uint8_t>(gF * 255.f * dens),
+        static_cast<std::uint8_t>(bF * 255.f * dens));
 }
