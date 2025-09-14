@@ -113,7 +113,12 @@ class Field
     /**
      * @brief Direct access to the underlying Eigen vector (read-only).
      */
-    [[nodiscard]] const StorageType& get() const noexcept { return data_; }
+     [[nodiscard]] const StorageType& get() const noexcept { return data_; }
+     
+     /**
+      * @brief Copy of underlying Eigen vector.
+      */
+    [[nodiscard]] StorageType copy() const noexcept { return data_; }
 
     /**
      * @brief Fills the entire field with value.

@@ -196,7 +196,7 @@ void advect(fluid::Fluid& fluid,
     const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
     int width = fluid.width(), height = fluid.height(), depth = fluid.depth();
-    auto oldVelocity = fluid.velocity().get();
+    auto oldVelocity = fluid.velocity().copy();
     auto& velocity = fluid.velocity().get();
 
     auto idx = [&](int x, int y, int z)
@@ -225,7 +225,7 @@ void diffuse(fluid::Fluid& fluid,
     const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
     int width = fluid.width(), height = fluid.height(), depth = fluid.depth();
-    auto oldVelocity = fluid.velocity().get();
+    auto oldVelocity = fluid.velocity().copy();
     auto& velocity = fluid.velocity().get();
 
     auto idx = [&](int x, int y, int z)
@@ -335,7 +335,7 @@ void advectDensity(fluid::Fluid& fluid,
     const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
     int width = fluid.width(), height = fluid.height(), depth = fluid.depth();
-    auto oldDensity = fluid.density().get();
+    auto oldDensity = fluid.density().copy();
     auto& density = fluid.density().get();
     auto& velocity = fluid.velocity().get();
     auto idx = [&](int x, int y, int z)
@@ -364,7 +364,7 @@ void diffuseDensity(fluid::Fluid& fluid,
     const std::vector<std::unique_ptr<boundary::IBoundary>>& bcs)
 {
     int width = fluid.width(), height = fluid.height(), depth = fluid.depth();
-    auto oldDensity = fluid.density().get();
+    auto oldDensity = fluid.density().copy();
     auto& density = fluid.density().get();
     auto idx = [&](int x, int y, int z)
     { return x + width * (y + height * z); };
