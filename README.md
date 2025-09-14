@@ -39,15 +39,15 @@
 ## Quick Example
 
 ```cpp
-#include <Flare/fluid/Fluid.h>
-#include <Flare/solver/BasicSolver.h>
-#include <Flare/boundary/Box.h>
+#include <Flare/fluid.h>
+#include <Flare/solver.h>
+#include <Flare/boundary.h>
 
 int main() {
     fluid::Fluid fluid(32, 32, 32);
     solver::BasicSolver solver;
 
-    solver.addBC(std::make_unique<boundary::BoxBoundary>(32, 32, 32));
+    solver.addBC(boundary::Box(32, 32, 32));
 
     const float dt = 0.1f;
     for (int i = 0; i < 100; ++i) 
