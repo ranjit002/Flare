@@ -14,28 +14,19 @@ namespace boundary
  * inflow jets or smoke sources.
  *
  */
-class InflowBoundary : public IBoundary
+class Inflow : public IBoundary
 {
    public:
-    explicit InflowBoundary(Eigen::Vector3f wallVelocity, float edgeDensity)
+    explicit Inflow(Eigen::Vector3f wallVelocity, float edgeDensity)
         : wallVelocity_(wallVelocity), edgeDensity_(edgeDensity)
     {
     }
 
-    bool isSolid(int x, int y, int z) const override
-    {
-        return x == 0;  // left boundary
-    }
+    bool isSolid(int x, int y, int z) const override;
 
-    Eigen::Vector3f wallVelocity(int x, int y, int z) const override
-    {
-        return wallVelocity_;
-    }
+    Eigen::Vector3f wallVelocity(int x, int y, int z) const override;
 
-    float wallDensity(int x, int y, int z) const override
-    {
-        return edgeDensity_;
-    }
+    float wallDensity(int x, int y, int z) const override;
 
    private:
     Eigen::Vector3f wallVelocity_;

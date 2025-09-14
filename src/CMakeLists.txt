@@ -4,6 +4,7 @@ add_library(Flare STATIC
 
     boundary/Box.cpp
     boundary/Circle.cpp
+    boundary/Inflow.cpp
 )
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -ffast-math")

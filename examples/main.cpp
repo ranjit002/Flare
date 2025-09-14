@@ -85,7 +85,7 @@ int main()
 
     // Boundaries
     std::vector<std::unique_ptr<boundary::IBoundary>> bcs;
-    bcs.push_back(std::make_unique<boundary::InflowBoundary>(
+    bcs.push_back(std::make_unique<boundary::Inflow>(
         Eigen::Vector3f(maxSpeed, 0, 0), 100));
     bcs.push_back(std::make_unique<boundary::Circle>(
         Eigen::Vector3f(W / 2.f, H / 2.f, D / 2.f), 10));
