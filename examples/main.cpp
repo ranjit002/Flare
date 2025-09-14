@@ -32,13 +32,11 @@ int main()
     solver::BasicSolver solver{10.0f, 1.f, 10, 10};
 
     // Boundaries
-    solver.addBCs({std::make_unique<boundary::Inflow>(
-                       Eigen::Vector3f(maxSpeed, 0, 0), 100),
-        std::make_unique<boundary::Circle>(
-            Eigen::Vector3f(W / 2.f, H / 2.f, D / 2.f), 10),
-        std::make_unique<boundary::Box>(W, H, D)});
-
-    // SFML window
+    solver.addBCs(boundary::Inflow(Eigen::Vector3f(maxSpeed, 0, 0), 100),
+        boundary::Circle(Eigen::Vector3f(W / 2.f, H / 2.f, D / 2.f), 10),
+        boundary::Box(W, H, D));
+    
+        // SFML window
     sf::RenderWindow window(sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}),
         "Fluid Simulation");
     window.setFramerateLimit(60);

@@ -54,14 +54,12 @@ class ISolver
         bcs_.push_back(std::move(bc));
     }
 
-    void addBCs(
-        std::initializer_list<std::unique_ptr<boundary::IBoundary>> list)
+    template <typename... BCs>
+    void addBCs(BCs&&... bcs)
     {
-        for (auto& bc : list)
-        {
-            bcs_.push_back(std::move(
-                const_cast<std::unique_ptr<boundary::IBoundary>&>(bc)));
-        }
+        (bcs_.push_back(
+             std::make_unique<std::decay_t<BCs>>(std::forward<BCs>(bcs))),
+            ...);
     }
 
     /**
