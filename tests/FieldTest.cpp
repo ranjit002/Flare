@@ -1,7 +1,7 @@
 #include <Eigen/Core>
 #include <catch2/catch_all.hpp>
 
-#include "Flare/fluid/Field.h"
+#include "Flare/fluid/FieldAliases.h"
 
 TEST_CASE("FieldVector stores and retrieves velocity correctly",
     "[FieldVector]")

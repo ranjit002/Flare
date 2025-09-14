@@ -1,7 +1,7 @@
 #pragma once
 #include <Eigen/Dense>
 
-#include "Field.h"
+#include "FieldAliases.h"
 
 namespace fluid
 {
