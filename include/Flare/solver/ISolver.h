@@ -54,6 +54,16 @@ class ISolver
         bcs_.push_back(std::move(bc));
     }
 
+    void addBCs(
+        std::initializer_list<std::unique_ptr<boundary::IBoundary>> list)
+    {
+        for (auto& bc : list)
+        {
+            bcs_.push_back(std::move(
+                const_cast<std::unique_ptr<boundary::IBoundary>&>(bc)));
+        }
+    }
+
     /**
      * @brief Read-only access to registered BCs.
      *

@@ -32,14 +32,11 @@ int main()
     solver::BasicSolver solver{10.0f, 1.f, 10, 10};
 
     // Boundaries
-    std::vector<std::unique_ptr<boundary::IBoundary>> bcs;
-    bcs.push_back(std::make_unique<boundary::Inflow>(
-        Eigen::Vector3f(maxSpeed, 0, 0), 100));
-    bcs.push_back(std::make_unique<boundary::Circle>(
-        Eigen::Vector3f(W / 2.f, H / 2.f, D / 2.f), 10));
-    bcs.push_back(std::make_unique<boundary::Box>(W, H, D));
-
-    for (auto& bc : bcs) solver.addBC(std::move(bc));
+    solver.addBCs({std::make_unique<boundary::Inflow>(
+                       Eigen::Vector3f(maxSpeed, 0, 0), 100),
+        std::make_unique<boundary::Circle>(
+            Eigen::Vector3f(W / 2.f, H / 2.f, D / 2.f), 10),
+        std::make_unique<boundary::Box>(W, H, D)});
 
     // SFML window
     sf::RenderWindow window(sf::VideoMode({SCALE_FACTOR * W, SCALE_FACTOR * H}),
