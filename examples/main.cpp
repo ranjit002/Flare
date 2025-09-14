@@ -4,12 +4,9 @@
 #include <cstdint>
 #include <memory>
 
-#include "Flare/boundary/Box.h"
-#include "Flare/boundary/Circle.h"
-#include "Flare/boundary/IBoundary.h"
-#include "Flare/boundary/Inflow.h"
-#include "Flare/fluid/Fluid.h"
-#include "Flare/solver/BasicSolver.h"
+#include "Flare/boundary.h"
+#include "Flare/fluid.h"
+#include "Flare/solver.h"
 
 // Convert velocity & density to color
 sf::Color colorFromVelDensity(const Eigen::Vector3f& vel,
